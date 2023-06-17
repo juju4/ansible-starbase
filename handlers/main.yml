@@ -1,0 +1,26 @@
+---
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: yes
+  become_user: root
+  when: not is_container | bool
+
+- name: Starbase Setup
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: "{{ starbase_npm_bin }}/yarn starbase setup"
+  args:
+    chdir: "{{ starbase_dir }}"
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:{{ starbase_npm_bin }}"
+  become: yes
+  become_user: "{{ starbase_user }}"
+
+- name: Restart starbase
+  ansible.builtin.service:
+    name: starbase
+    state: restarted
+  become: yes
+  become_user: root
+  when: not is_container | bool

@@ -1,0 +1,41 @@
+---
+
+- name: Remove conflicting packages
+  ansible.builtin.package:
+    name: "{{ pkg_remove }}"
+    state: absent
+
+- name: Install starbase dependencies
+  ansible.builtin.package:
+    name: "{{ pkg_deps }}"
+    state: present
+
+- name: Ensure starbase user exists
+  ansible.builtin.user:
+    name: "{{ starbase_user }}"
+    home: "{{ starbase_home }}"
+    system: true
+
+- name: Git clone starbase
+  ansible.builtin.git:
+    repo: "{{ starbase_repo }}"
+    dest: "{{ starbase_dir }}"
+    version: "{{ starbase_version }}"
+  become: yes
+  become_user: "{{ starbase_user }}"
+
+- name: Setup starbase configuration
+  ansible.builtin.template:
+    src: "{{ starbase_config_template }}"
+    dest: "{{ starbase_dir }}/config.yaml"
+    mode: '0600'
+    owner: "{{ starbase_user }}"
+  notify:
+    - Starbase Setup
+
+- name: Ensure logs folder exists
+  ansible.builtin.file:
+    dest: /var/log/starbase
+    state: directory
+    mode: '0775'
+    owner: "{{ starbase_user }}"

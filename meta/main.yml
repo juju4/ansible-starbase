@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: juju4
+  role_name: starbase
+  description: Setup JupyterOne starbase server, Graph-based security analysis for everyone.
+  license: BSD
+  min_ansible_version: '2.12'
+  standalone: true
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - focal
+  galaxy_tags:
+    - security
+    - inventory
+    - assetmanagement
+dependencies:
+  - role: kevincoakley.neo4j

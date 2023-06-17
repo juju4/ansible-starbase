@@ -1,0 +1,25 @@
+---
+
+- name: Ensure systemd is present
+  ansible.builtin.package:
+    name: systemd
+    state: present
+
+- name: Configure starbase systemd unit
+  ansible.builtin.template:
+    src: "systemd-starbase.service.j2"
+    dest: "/etc/systemd/system/starbase.service"
+    mode: '0644'
+  notify:
+    - Reload systemd
+
+- name: Enable and start starbase service
+  ansible.builtin.service:
+    name: "starbase.service"
+    state: started
+    enabled: yes
+  no_log: "{{ starbase_no_log | default(true) }}"
+  when: not is_container | bool
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

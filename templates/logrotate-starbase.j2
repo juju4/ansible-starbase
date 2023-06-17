@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+## /etc/logrotate.d/starbase
+
+/var/log/starbase/*.log {
+    rotate {{ starbase_logrotate_rotate|int }}
+    {{ starbase_logrotate_period }}
+{% if starbase_logrotate_datext %}
+    dateext
+    dateformat {{ starbase_logrotate_datformat }}
+{% endif%}
+    missingok
+    notifempty
+{% if starbase_logrotate_compress %}
+    compress
+    delaycompress
+{% endif %}
+    missingok
+    notifempty
+    copytruncate
+    create 0640 {{ starbase_user }} root
+}

@@ -1,0 +1,64 @@
+---
+# defaults file for juju4.starbase
+
+starbase_repo: https://github.com/JupiterOne/starbase.git
+starbase_version: v0.7.0
+starbase_user: _starbase
+starbase_home: /var/_starbase
+starbase_dir: "{{ starbase_home }}/starbase"
+starbase_config_template: config.yaml.j2
+
+starbase_neo4j_url: 'bolt://localhost:7687'
+starbase_neo4j_db: neo4j
+starbase_neo4j_user: neo4j
+
+starbase_npm_bin: /usr/local/lib/npm/bin
+
+starbase_cgroups_restriction_enable: true
+# if not empty, to be added to systemd service IPAddressAllow
+starbase_webproxy_ip: ''
+# same but IP or hostname
+starbase_webproxy_host: ''
+starbase_webproxy_port: ''
+
+starbase_logrotate_period: 'daily'
+starbase_logrotate_rotate: 90
+starbase_logrotate_compress: true
+starbase_logrotate_delaycompress: true
+starbase_logrotate_datext: true
+starbase_logrotate_datformat: '-%Y%m%d'
+
+starbase_ufw: true
+starbase_ufw_if: eth0
+## only affect incoming traffic
+# starbase_ufw_default_policy: allow
+starbase_ufw_default_policy: deny
+starbase_ufw_default_logging: medium
+# trusted sources for all ports
+starbase_ufw_access:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+starbase_ufw_access_with_log: []
+# opened ports for all sources
+starbase_ufw_allow_ports_in: []
+starbase_ufw_out_logging: no
+starbase_ufw_allow_ports_out:
+  # - '22'
+  # - '25'
+  - '53'
+  - '123'
+  ## email/TLS?
+  - '587'
+  ## web (some apt updates are on http)
+  - '80'
+  - '443'
+  # - '8080'
+  ## gpg keyserver
+  # - '11371'
+  ## using dhcp?
+  # - '67'
+
+starbase_ufw_allow_if_out: []
+
+is_container: false

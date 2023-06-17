@@ -1,0 +1,30 @@
+---
+# tasks file for juju4.starbase
+
+- name: Include os family variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Set fact is_container
+  ansible.builtin.set_fact:
+    is_container: true
+  when: >
+    (ansible_virtualization_type is defined and
+      (ansible_virtualization_type == "docker"
+       or ansible_virtualization_type == "containerd"
+       or ansible_virtualization_type == "container"
+      )
+    )
+
+- name: Import starbase
+  ansible.builtin.import_tasks: starbase.yml
+- name: Import logrotate
+  ansible.builtin.import_tasks: logrotate.yml
+- name: Import firewall-ufw
+  ansible.builtin.import_tasks: firewall-ufw.yml
+  become: yes
+  become_user: root
+  when:
+    - starbase_ufw|bool
+    - not is_container
+- name: Import systemd
+  ansible.builtin.import_tasks: systemd.yml

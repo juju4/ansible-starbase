@@ -1,0 +1,82 @@
+---
+
+- name: Install ufw
+  ansible.builtin.package:
+    name: "ufw"
+    state: "present"
+  register: pkg_result
+  until: pkg_result is success
+
+- name: UFW | RedHat | ensure enabled
+  community.general.ufw:
+    state: "enabled"
+  when: ansible_os_family == " 'RedHat'"
+
+- name: UFW | ensure logging medium is enabled
+  community.general.ufw:
+    logging: "{{ starbase_ufw_default_logging }}"
+
+- name: UFW | always allow ssh
+  community.general.ufw:
+    rule: allow
+    name: "{{ ufw_rulename_ssh | default('OpenSSH') }}"
+    log: yes
+
+- name: UFW | allow access from defined networks
+  community.general.ufw:
+    rule: "allow"
+    src: "{{ item }}"
+  with_items: "{{ starbase_ufw_access }}"
+
+- name: UFW | allow access from defined networks - with logging
+  community.general.ufw:
+    rule: "allow"
+    src: "{{ item }}"
+    log: "yes"
+  with_items: "{{ starbase_ufw_access_with_log }}"
+
+- name: UFW | allow incoming traffic for defined ports
+  community.general.ufw:
+    rule: allow
+    interface: "{{ starbase_ufw_if }}"
+    direction: in
+    to_port: "{{ item }}"
+  with_items: "{{ starbase_ufw_allow_ports_in }}"
+
+- name: UFW | allow outgoing traffic for defined ports - {{ starbase_ufw_if }}
+  community.general.ufw:
+    rule: allow
+    interface: "{{ starbase_ufw_if }}"
+    direction: out
+    proto: tcp
+    dest: "{{ starbase_webproxy_ip }}"
+    to_port: "{{ starbase_webproxy_port }}"
+  when:
+    - starbase_webproxy_ip|string
+    - starbase_webproxy_port|string
+
+- name: UFW | allow outgoing traffic for defined ports - {{ starbase_ufw_if }}
+  community.general.ufw:
+    rule: allow
+    interface: "{{ starbase_ufw_if }}"
+    direction: out
+    to_port: "{{ item }}"
+    log: "{{ starbase_ufw_out_logging }}"
+  with_items: "{{ starbase_ufw_allow_ports_out }}"
+
+- name: UFW | allow all outgoing traffic for defined interfaces
+  community.general.ufw:
+    rule: "allow"
+    interface: "{{ item }}"
+    direction: "out"
+  with_items: "{{ starbase_ufw_allow_if_out }}"
+
+- name: UFW | default policy
+  community.general.ufw:
+    state: enabled
+    direction: "{{ item }}"
+    policy: "{{ starbase_ufw_default_policy }}"
+    log: yes
+  with_items:
+    - incoming
+    - outgoing
