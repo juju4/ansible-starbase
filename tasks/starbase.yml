@@ -39,3 +39,7 @@
     state: directory
     mode: '0775'
     owner: "{{ starbase_user }}"
+
+- name: Install yarn packages dependencies
+  community.general.yarn:
+    path: "{{ starbase_dir }}"
