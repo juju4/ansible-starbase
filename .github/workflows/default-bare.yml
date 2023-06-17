@@ -56,10 +56,14 @@ jobs:
       - name: Clean nodejs environment
         run: |
           set -x
-          dpkg -l | grep nodejs
+          dpkg -l | grep nodejs || true
+          ls -l /opt/hostedtoolcache/ || true
+          whereis node || true
           whereis npm || true
           node --version || true
           npm --version || true
+          sudo rm -Rf /opt/hostedtoolcache/node/1[68]*
+          node --version || true
       - name: Set java
         run: |
           set -x
