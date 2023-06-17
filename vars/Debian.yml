@@ -1,5 +1,6 @@
 ---
 
-pkg_deps: []
+pkg_deps:
+  - git
 
 pkg_remove: []
