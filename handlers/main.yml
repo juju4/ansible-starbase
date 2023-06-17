@@ -15,7 +15,6 @@
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:{{ starbase_npm_bin }}"
   become: yes
-  become_flags: -H
   become_user: "{{ starbase_user }}"
 
 - name: Restart starbase
