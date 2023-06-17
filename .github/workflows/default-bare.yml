@@ -53,6 +53,13 @@ jobs:
           pwd
           env
           find -ls
+      - name: Clean nodejs environment
+        run: |
+          set -x
+          dpkg -l | grep nodejs
+          whereis npm || true
+          node --version || true
+          npm --version || true
       - name: Set java
         run: |
           set -x
