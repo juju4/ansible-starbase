@@ -14,6 +14,7 @@
     chdir: "{{ starbase_dir }}"
   environment:
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:{{ starbase_npm_bin }}"
+    HOME: "{{ starbase_home }}"
   become: yes
   become_user: "{{ starbase_user }}"
 
