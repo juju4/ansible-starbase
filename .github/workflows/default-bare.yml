@@ -60,6 +60,7 @@ jobs:
           ls -l /opt/hostedtoolcache/ || true
           whereis node || true
           whereis npm || true
+          ls -l /usr/local/bin/node* || true
           node --version || true
           npm --version || true
           sudo rm -Rf /opt/hostedtoolcache/node/1[68]*
