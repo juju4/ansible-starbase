@@ -43,3 +43,5 @@
 - name: Install yarn packages dependencies
   community.general.yarn:
     path: "{{ starbase_dir }}"
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:{{ starbase_npm_bin }}"
