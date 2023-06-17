@@ -13,12 +13,19 @@ jobs:
   build:
     permissions:
       contents: read
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.distribution }}-${{ matrix.version }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
+        include:
+          - distribution: ubuntu
+            version: '22.04'
+            experimental: true
+          - distribution: ubuntu
+            version: '20.04'
+            experimental: true
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: "-e starbase_no_log=false"
