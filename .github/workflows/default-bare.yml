@@ -30,6 +30,7 @@ jobs:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: "-e starbase_no_log=false"
       ANSIBLE_ROLE: juju4.starbase
+      NEO4J_PASSWORD_CI: neo4j_123456
 
     steps:
       - uses: actions/checkout@v3
@@ -126,8 +127,13 @@ jobs:
       - name: After script - etc
         run: |
           set -x
-          cat /etc/neo4j/neo4j.conf
           cat /etc/systemd/system/starbase.service
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - etc neo4j
+        run: |
+          set -x
+          cat /etc/neo4j/neo4j.conf
           cat /lib/systemd/system/neo4j.service
         if: ${{ always() }}
         continue-on-error: true
@@ -135,8 +141,9 @@ jobs:
         run: |
           cd /var/_starbase/starbase
           set -x
-          npm outdated || true
-          npm audit || true
+          sudo -u _starbase npm outdated || true
+          sudo -u _starbase npm audit || true
+          sudo -u _starbase yarn audit || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - cypher
@@ -146,8 +153,8 @@ jobs:
           env
           cat /etc/environment
           export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
-          echo "CALL db.schema.visualization()" | cypher-shell -a localhost -u neo4j -p neo4j
-          echo "MATCH (n) RETURN labels(n), count(*)" | cypher-shell -a localhost -u neo4j -p neo4j
-          echo "MATCH ()-[r]->() RETURN count(r) as count" | cypher-shell -a localhost -u neo4j -p neo4j
+          echo "CALL db.schema.visualization()" | cypher-shell -a localhost -u neo4j -p $NEO4J_PASSWORD_CI
+          echo "MATCH (n) RETURN labels(n), count(*)" | cypher-shell -a localhost -u neo4j -p $NEO4J_PASSWORD_CI
+          echo "MATCH ()-[r]->() RETURN count(r) as count" | cypher-shell -a localhost -u neo4j -p $NEO4j_PASSWORD_CI
         if: ${{ always() }}
         continue-on-error: true
