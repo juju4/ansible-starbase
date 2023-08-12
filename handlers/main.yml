@@ -17,6 +17,7 @@
     HOME: "{{ starbase_home }}"
   become: yes
   become_user: "{{ starbase_user }}"
+  become_flag: -H
 
 - name: Restart starbase
   ansible.builtin.service:
