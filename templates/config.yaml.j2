@@ -7,7 +7,16 @@
 #   https://docs.ansible.com/ansible/latest/collections/amazon/aws/secretsmanager_secret_lookup.html
 #   https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_keyvault_secret_lookup.html
 #   https://learn.microsoft.com/en-us/azure/developer/ansible/key-vault-configure-secrets?tabs=ansible
+{% if starbase_integrations_azure_enable|bool or
+      starbase_integrations_crowdstrike_enable|bool or
+      starbase_integrations_jamf_enable|bool or
+      starbase_integrations_m365_enable|bool or
+      starbase_integrations_rapid7_enable|bool or
+      starbase_integrations_sentry_enable|bool %}
 integrations:
+{% else %}
+integrations: []
+{% endif %}
 {% if starbase_integrations_azure_enable|bool %}
 # https://github.com/JupiterOne/graph-azure/blob/main/docs/jupiterone.md
 # https://github.com/JupiterOne/graph-azure/blob/main/docs/development.md#azure-setup-for-integration
