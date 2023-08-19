@@ -29,6 +29,7 @@ integrations: []
       CLIENT_SECRET: '{{ starbase_integrations_azure_client_secret }}'
       DIRECTORY_ID: '{{ starbase_integrations_azure_tenant_id }}'
       SUBSCRIPTION_ID: '{{ starbase_integrations_azure_subscription_id }}'
+      CONFIGURE_SUBSCRIPTION_INSTANCES: true
       INGEST_ACTIVE_DIRECTORY: true
       INGEST_RESOURCE_MANAGER: true
 {% endif %}
@@ -45,6 +46,8 @@ integrations: []
       AVAILABILITY_ZONE: '{{ starbase_integrations_crowdstrike_availabilitity_zone }}'
       INCLUDE_CLOSED_VULNERABILITIES: {{ starbase_integrations_crowdstrike_include_closed_vuln|bool }}
       VULNERABILITY_SEVERITIES: '{{ starbase_integrations_crowdstrike_vuln_severities }}'
+      VULNERABILITIES_LIMIT: ''
+      DEVICES_LIMIT: ''
 {% endif %}
 {% if starbase_integrations_jamf_enable|bool %}
   - name: graph-jamf
@@ -52,15 +55,15 @@ integrations: []
     directory: ./.integrations/graph-jamf
     gitRemoteUrl: https://github.com/JupiterOne/graph-jamf.git
     config:
-      JAMF_HOST: {{ starbase_integrations_jamf_host }}
-      JAMF_USERNAME: {{ starbase_integrations_jamf_user }}
-      JAMF_PASSWORD: {{ starbase_integrations_jamf_pass }}
+      JAMF_HOST: '{{ starbase_integrations_jamf_host }}'
+      JAMF_USERNAME: '{{ starbase_integrations_jamf_user }}'
+      JAMF_PASSWORD: '{{ starbase_integrations_jamf_pass }}'
 {% endif %}
 {% if starbase_integrations_m365_enable|bool %}
   - name: graph-m365
     instanceId: testInstanceId
     directory: ./.integrations/graph-m365
-    gitRemoteUrl: https://github.com/JupiterOne/graph-m365.git
+    gitRemoteUrl: https://github.com/JupiterOne/graph-microsoft-365.git
     config:
       CLIENT_ID: '{{ starbase_integrations_m365_client_id }}'
       CLIENT_SECRET: '{{ starbase_integrations_m365_client_secret }}'
