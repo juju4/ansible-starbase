@@ -60,9 +60,9 @@ integrations: []
       JAMF_PASSWORD: '{{ starbase_integrations_jamf_pass }}'
 {% endif %}
 {% if starbase_integrations_m365_enable|bool %}
-  - name: graph-m365
+  - name: graph-microsoft-365
     instanceId: testInstanceId
-    directory: ./.integrations/graph-m365
+    directory: ./.integrations/graph-microsoft-365
     gitRemoteUrl: https://github.com/JupiterOne/graph-microsoft-365.git
     config:
       CLIENT_ID: '{{ starbase_integrations_m365_client_id }}'
