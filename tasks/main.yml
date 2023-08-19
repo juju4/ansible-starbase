@@ -28,3 +28,13 @@
     - not is_container
 - name: Import systemd
   ansible.builtin.import_tasks: systemd.yml
+
+- name: Github Actions | Allow starbase user to write runner
+  ansible.posix.acl:
+    path: /home/runner/.config/yarn
+    entity: "{{ starbase_user }}"
+    etype: user
+    permissions: rwx
+    recursive: true
+    state: present
+  when: ansible_env['GITHUB_ACTIONS'] is defined and ansible_env['GITHUB_ACTIONS'] == 'true'
