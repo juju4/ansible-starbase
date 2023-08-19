@@ -1,0 +1,143 @@
+---
+
+- name: Verify
+  hosts: starbasegroup
+  gather_facts: true
+  vars:
+    neo4j_test_user: neo4j
+    # pragma: allowlist secret
+    neo4j_test_passwd: neo4j_123456
+    starbase_home: /var/_starbase
+    starbase_start: "/var/_starbase/starbase/bin/starbase"
+    starbase_mode: '0775'
+    pkg_test: nodejs
+    binary_neo4j: "/usr/bin/neo4j"
+    config_neo4j: /etc/neo4j/neo4j.conf
+    config: "/var/_starbase/starbase/config.yaml"
+    ports:
+      # neo4j
+      - { h: localhost, p: 7687 }
+    is_container: false
+  pre_tasks:
+    - name: Debug | var ansible_virtualization_type
+      ansible.builtin.debug:
+        var: ansible_virtualization_type
+    - name: Set fact is_container
+      ansible.builtin.set_fact:
+        is_container: true
+      when: >
+        (ansible_virtualization_type is defined and
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+           or ansible_virtualization_type == "container"
+          )
+        )
+    - name: Set fact starbase_mode
+      ansible.builtin.set_fact:
+        starbase_mode: '0755'
+      when: ansible_os_family == "RedHat"
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Validate that needed packages are present
+      ansible.builtin.assert:
+        that: ansible_facts.packages[pkg_test]
+
+    - name: Check starbase executable
+      ansible.builtin.stat:
+        path: "{{ starbase_start }}"
+      register: bin1
+    - name: Validate starbase executable is present
+      ansible.builtin.assert:
+        that: bin1.stat.exists and bin1.stat.size != 0 and bin1.stat.mode == starbase_mode
+
+    - name: Check neo4j binary
+      ansible.builtin.stat:
+        path: "{{ binary_neo4j }}"
+      register: bin2
+    - name: Validate neo4j binary is present
+      ansible.builtin.assert:
+        that: bin2.stat.exists and bin2.stat.size != 0 and bin2.stat.mode == '0755'
+
+    - name: Check neo4j config file
+      ansible.builtin.stat:
+        path: "{{ config_neo4j }}"
+      register: cfg1
+    - name: Validate starbase configuration files are present
+      ansible.builtin.assert:
+        that: cfg1.stat.exists and cfg1.stat.size != 0
+
+    - name: Ensure neo4j running
+      ansible.builtin.command: pgrep -u neo4j java
+      register: ps3
+      changed_when: false
+      failed_when: false
+    - name: Validate ps output
+      ansible.builtin.assert:
+        that: ps3.stdout
+      when:
+        - not is_container|bool
+
+    - name: Ensure procps package is present
+      ansible.builtin.package:
+        name: procps
+        state: present
+      when: ansible_os_family == "RedHat"
+    - name: Check all processes
+      ansible.builtin.command: ps aux
+      changed_when: false
+      register: psa
+    - name: Debug | ps aux output
+      ansible.builtin.debug:
+        var: psa
+        verbosity: 1
+
+    - name: Ensure ports are listening
+      ansible.builtin.wait_for:
+        host: "{{ item.h }}"
+        port: "{{ item.p }}"
+        timeout: 10
+      with_items: "{{ ports }}"
+      when:
+        - not is_container|bool
+
+    - name: Npm outdated
+      ansible.builtin.command: npm outdated
+      args:
+        chdir: /var/_starbase/starbase
+      changed_when: false
+      failed_when: false
+      register: outdated
+    - name: Validate no outdated npm packages
+      ansible.builtin.assert:
+        that:
+          - "'MISSING' not in outdated.stdout"
+      failed_when: false
+
+    - name: Npm lock
+      ansible.builtin.command: npm i --package-lock-only
+      args:
+        chdir: /var/_starbase/starbase
+      changed_when: false
+    - name: Npm audit
+      ansible.builtin.command: npm audit
+      args:
+        chdir: /var/_starbase/starbase
+      changed_when: false
+      failed_when: false
+      register: audit
+    - name: Validate no known vulnerabilities from npm audit
+      ansible.builtin.assert:
+        that:
+          - "'found' in audit.stderr"
+      failed_when: false
+
+    - name: Check few cypher queries  # noqa command-instead-of-shell
+      ansible.builtin.shell: "{{ item }}"
+      changed_when: false
+      loop:
+        - "echo \"CALL db.schema.visualization()\" | cypher-shell -a localhost -u {{ neo4j_test_user }} -p {{ neo4j_test_passwd }}"
+        - "echo \"MATCH (n) RETURN labels(n), count(*)\" | cypher-shell -a localhost -u {{ neo4j_test_user }} -p {{ neo4j_test_passwd }}"
+        - "echo \"MATCH ()-[r]->() RETURN count(r) as count\" | cypher-shell -a localhost -u {{ neo4j_test_user }} -p {{ neo4j_test_passwd }}"
+      when:
+        - not is_container|bool

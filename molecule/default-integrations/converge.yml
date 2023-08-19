@@ -1,0 +1,60 @@
+---
+
+- name: Converge
+  hosts: all
+  environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
+  remote_user: root
+  vars:
+    neo4j_allow_any_connection: true
+    neo4j_memory_pagecache_size: 1g
+    # pragma: allowlist secret
+    neo4j_password: neo4j_123456
+    nodejs_version: "18.x"
+    nodejs_npm_global_packages:
+      - yarn
+      - typescript
+      - ts-node
+    starbase_integrations_azure_enable: true
+    starbase_integrations_crowdstrike_enable: true
+    starbase_integrations_jamf_enable: true
+    starbase_integrations_m365_enable: true
+    starbase_integrations_rapid7_enable: true
+    starbase_integrations_sentry_enable: true
+  pre_tasks:
+    - name: Ubuntu | Install python3
+      ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16)
+    - name: RedHat | Install python3
+      ansible.builtin.raw: test -e /usr/bin/python3 || (yum install -y python3)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
+    - name: Gather Facts
+      ansible.builtin.setup:
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16)
+    - name: Ubuntu Bionic+, Redhat 8+ | Enforce python3 for ansible
+      ansible.builtin.set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+      when: >
+        (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16) or
+        (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
+    - name: Debug | var ansible_virtualization_type
+      ansible.builtin.debug:
+        var: ansible_virtualization_type
+    - name: Debian | Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+    - name: Ensure gnupg2 is present for geerlingguy.nodejs
+      ansible.builtin.package:
+        name: gnupg2
+        state: present
+  roles:
+    - geerlingguy.nodejs
+    - juju4.starbase
