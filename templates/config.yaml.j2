@@ -22,7 +22,7 @@ integrations:
       SUBSCRIPTION_ID: '{{ starbase_integrations_azure_subscription_id }}'
       INGEST_ACTIVE_DIRECTORY: true
       INGEST_RESOURCE_MANAGER: true
-{% endifif %}
+{% endif %}
 {% if starbase_integrations_crowdstrike_enable|bool %}
 # https://github.com/JupiterOne/graph-crowdstrike/blob/main/docs/jupiterone.md
 #
@@ -36,7 +36,7 @@ integrations:
       AVAILABILITY_ZONE: '{{ starbase_integrations_crowdstrike_availabilitity_zone }}'
       INCLUDE_CLOSED_VULNERABILITIES: {{ starbase_integrations_crowdstrike_include_closed_vuln|bool }}
       VULNERABILITY_SEVERITIES: '{{ starbase_integrations_crowdstrike_vuln_severities }}'
-{% endifif %}
+{% endif %}
 {% if starbase_integrations_jamf_enable|bool %}
   - name: graph-jamf
     instanceId: testInstanceId
@@ -46,7 +46,7 @@ integrations:
       JAMF_HOST: {{ starbase_integrations_jamf_host }}
       JAMF_USERNAME: {{ starbase_integrations_jamf_user }}
       JAMF_PASSWORD: {{ starbase_integrations_jamf_pass }}
-{% endifif %}
+{% endif %}
 {% if starbase_integrations_m365_enable|bool %}
   - name: graph-m365
     instanceId: testInstanceId
@@ -56,7 +56,7 @@ integrations:
       CLIENT_ID: '{{ starbase_integrations_m365_client_id }}'
       CLIENT_SECRET: '{{ starbase_integrations_m365_client_secret }}'
       TENANT: '{{ starbase_integrations_m365_tenant_id }}'
-{% endifif %}
+{% endif %}
 {% if starbase_integrations_rapid7_enable|bool %}
   - name: graph-rapid7
     instanceId: testInstanceId
@@ -67,7 +67,7 @@ integrations:
       INSIGHT_CLIENT_USERNAME: "{{ starbase_integrations_rapid7_user }}"
       INSIGHT_CLIENT_PASSWORD: "{{ starbase_integrations_rapid7_pass }}"
       DISABLE_TLS_VERIFICATION: {{ starbase_integrations_rapid7_disable_tls_verif|bool }}
-{% endifif %}
+{% endif %}
 {% if starbase_integrations_sentry_enable|bool %}
   - name: graph-sentry
     instanceId: testInstanceId
@@ -76,7 +76,7 @@ integrations:
     config:
       AUTH_TOKEN: {{ starbase_integrations_sentry_token }}
       ORGANIZATION_SLUG: {{ starbase_integrations_sentry_org }}
-{% endifif %}
+{% endif %}
 storage:
   - engine: neo4j
     config:
