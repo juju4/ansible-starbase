@@ -17,6 +17,10 @@
       - yarn
       - typescript
       - ts-node
+      # integrations
+      - 'typescript@>=2.7'
+      - 'inquirer@<9.x'
+      - '@types/node'
     starbase_integrations_azure_enable: true
     starbase_integrations_crowdstrike_enable: true
     starbase_integrations_jamf_enable: true

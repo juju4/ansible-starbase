@@ -17,6 +17,10 @@
       - yarn
       - typescript
       - ts-node
+      # integrations
+      - 'typescript@>=2.7'
+      - 'inquirer@<9.x'
+      - '@types/node'
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
