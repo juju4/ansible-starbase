@@ -27,6 +27,10 @@
     - starbase_ufw|bool
     - not is_container
 
+- name: Check if /home/runner/.config/yarn exists
+  ansible.builtin.stat:
+    path: /home/runner/.config/yarn
+  register: runneryarn
 - name: Github Actions | Allow starbase user to write runner
   ansible.posix.acl:
     path: /home/runner/.config/yarn
@@ -35,7 +39,9 @@
     permissions: rwx
     recursive: true
     state: present
-  when: ansible_env['GITHUB_ACTIONS'] is defined and ansible_env['GITHUB_ACTIONS'] == 'true'
+  when: >
+    (ansible_env['GITHUB_ACTIONS'] is defined and ansible_env['GITHUB_ACTIONS'] == 'true') or
+    (runneryarn.stat.exists)
 
 - name: Import systemd
   ansible.builtin.import_tasks: systemd.yml
