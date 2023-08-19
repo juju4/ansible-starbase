@@ -3,32 +3,83 @@
 #
 # for secrets variables, use one of the following options or similar
 # * ansible vault
-# * cloud vault: 
+# * cloud vault:
 #   https://docs.ansible.com/ansible/latest/collections/amazon/aws/secretsmanager_secret_lookup.html
 #   https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_keyvault_secret_lookup.html
 #   https://learn.microsoft.com/en-us/azure/developer/ansible/key-vault-configure-secrets?tabs=ansible
 integrations:
-  -
-    name: graph-jamf
+{% if starbase_integrations_azure_enable|bool %}
+# https://github.com/JupiterOne/graph-azure/blob/main/docs/jupiterone.md
+# https://github.com/JupiterOne/graph-azure/blob/main/docs/development.md#azure-setup-for-integration
+  - name: graph-azure
+    instanceId: {{ starbase_integrations_azure_instance_id }}
+    directory: ./.integrations/graph-azure
+    gitRemoteUrl: https://github.com/JupiterOne/graph-azure.git
+    config:
+      CLIENT_ID: '{{ starbase_integrations_azure_client_id }}'
+      CLIENT_SECRET: '{{ starbase_integrations_azure_client_secret }}'
+      DIRECTORY_ID: '{{ starbase_integrations_azure_tenant_id }}'
+      SUBSCRIPTION_ID: '{{ starbase_integrations_azure_subscription_id }}'
+      INGEST_ACTIVE_DIRECTORY: true
+      INGEST_RESOURCE_MANAGER: true
+{% endifif %}
+{% if starbase_integrations_crowdstrike_enable|bool %}
+# https://github.com/JupiterOne/graph-crowdstrike/blob/main/docs/jupiterone.md
+#
+  - name: graph-crowdstrike
+    instanceId: testInstanceId
+    directory: ./.integrations/graph-crowdstrike
+    gitRemoteUrl: https://github.com/JupiterOne/graph-crowdstrike.git
+    config:
+      CLIENT_ID: '{{ starbase_integrations_crowdstrike_client_id }}'
+      CLIENT_SECRET: '{{ starbase_integrations_crowdstrike_client_secret }}'
+      AVAILABILITY_ZONE: '{{ starbase_integrations_crowdstrike_availabilitity_zone }}'
+      INCLUDE_CLOSED_VULNERABILITIES: {{ starbase_integrations_crowdstrike_include_closed_vuln|bool }}
+      VULNERABILITY_SEVERITIES: '{{ starbase_integrations_crowdstrike_vuln_severities }}'
+{% endifif %}
+{% if starbase_integrations_jamf_enable|bool %}
+  - name: graph-jamf
     instanceId: testInstanceId
     directory: ./.integrations/graph-jamf
     gitRemoteUrl: https://github.com/JupiterOne/graph-jamf.git
     config:
-      JAMF_HOST: example-host
-      JAMF_USERNAME: example-username
-      JAMF_PASSWORD: example-password
-  -
-    name: graph-sentry
+      JAMF_HOST: {{ starbase_integrations_jamf_host }}
+      JAMF_USERNAME: {{ starbase_integrations_jamf_user }}
+      JAMF_PASSWORD: {{ starbase_integrations_jamf_pass }}
+{% endifif %}
+{% if starbase_integrations_m365_enable|bool %}
+  - name: graph-m365
+    instanceId: testInstanceId
+    directory: ./.integrations/graph-m365
+    gitRemoteUrl: https://github.com/JupiterOne/graph-m365.git
+    config:
+      CLIENT_ID: '{{ starbase_integrations_m365_client_id }}'
+      CLIENT_SECRET: '{{ starbase_integrations_m365_client_secret }}'
+      TENANT: '{{ starbase_integrations_m365_tenant_id }}'
+{% endifif %}
+{% if starbase_integrations_rapid7_enable|bool %}
+  - name: graph-rapid7
+    instanceId: testInstanceId
+    directory: ./.integrations/graph-rapid7
+    gitRemoteUrl: https://github.com/JupiterOne/graph-rapid7.git
+    config:
+      INSIGHT_HOST: "{{ starbase_integrations_rapid7_host }}"
+      INSIGHT_CLIENT_USERNAME: "{{ starbase_integrations_rapid7_user }}"
+      INSIGHT_CLIENT_PASSWORD: "{{ starbase_integrations_rapid7_pass }}"
+      DISABLE_TLS_VERIFICATION: {{ starbase_integrations_rapid7_disable_tls_verif|bool }}
+{% endifif %}
+{% if starbase_integrations_sentry_enable|bool %}
+  - name: graph-sentry
     instanceId: testInstanceId
     directory: ./.integrations/graph-sentry
     gitRemoteUrl: https://github.com/JupiterOne/graph-sentry.git
     config:
-      AUTH_TOKEN: example-token
-      ORGANIZATION_SLUG: example-organization
+      AUTH_TOKEN: {{ starbase_integrations_sentry_token }}
+      ORGANIZATION_SLUG: {{ starbase_integrations_sentry_org }}
+{% endifif %}
 storage:
-  - 
-    engine: neo4j
-    config: 
+  - engine: neo4j
+    config:
       username: {{ starbase_neo4j_user }}
       password: {{ neo4j_password }}
       uri: {{ starbase_neo4j_url }}

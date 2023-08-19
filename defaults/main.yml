@@ -8,6 +8,37 @@ starbase_home: /var/_starbase
 starbase_dir: "{{ starbase_home }}/starbase"
 starbase_config_template: config.yaml.j2
 
+# use vaults for sensitive data
+starbase_integrations_azure_enable: false
+starbase_integrations_azure_instance_id: testInstanceId
+starbase_integrations_azure_client_id: ''
+starbase_integrations_azure_client_secret: ''
+starbase_integrations_azure_tenant_id: ''
+starbase_integrations_azure_subscription_id: ''
+starbase_integrations_crowdstrike_enable: false
+starbase_integrations_crowdstrike_client_id: ''
+starbase_integrations_crowdstrike_client_secret: ''
+starbase_integrations_crowdstrike_availabilitity_zone: ''
+starbase_integrations_crowdstrike_include_closed_vuln: false
+starbase_integrations_crowdstrike_vuln_severities: ''
+starbase_integrations_jamf_enable: false
+starbase_integrations_jamf_host: ''
+starbase_integrations_jamf_user: ''
+starbase_integrations_jamf_pass: ''
+starbase_integrations_m365_enable: false
+starbase_integrations_m365_instance_id: testInstanceId
+starbase_integrations_m365_client_id: ''
+starbase_integrations_m365_client_secret: ''
+starbase_integrations_m365_tenant_id: ''
+starbase_integrations_rapid7_enable: false
+starbase_integrations_rapid7_host: localhost:3780
+starbase_integrations_rapid7_user: admin-username
+starbase_integrations_rapid7_pass: admin-password
+starbase_integrations_rapid7_disable_tls_verif: false
+starbase_integrations_sentry_enable: false
+starbase_integrations_sentry_token: ''
+starbase_integrations_sentry_org: ''
+
 starbase_neo4j_url: 'bolt://localhost:7687'
 starbase_neo4j_db: neo4j
 starbase_neo4j_user: neo4j
