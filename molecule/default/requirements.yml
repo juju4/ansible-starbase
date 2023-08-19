@@ -2,6 +2,8 @@
 
 collections:
   - name: ansible.posix
+  - name: community.docker
+
 roles:
   - name: geerlingguy.nodejs
   # - name: kevincoakley.neo4j
