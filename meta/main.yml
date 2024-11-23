@@ -5,7 +5,6 @@ galaxy_info:
   description: Setup JupyterOne starbase server, Graph-based security analysis for everyone.
   license: BSD
   min_ansible_version: '2.12'
-  standalone: true
   platforms:
     - name: Ubuntu
       versions:
