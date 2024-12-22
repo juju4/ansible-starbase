@@ -104,9 +104,9 @@ SystemCallErrorNumber=EPERM
 SystemCallArchitectures=native
 
 {% if starbase_cgroups_restriction_enable|bool %}
-CPUShares={{ starbase_cgroups_cpushares | default('1024') }}
+CPUWeight={{ starbase_cgroups_cpushares | default('1024') }}
 CPUQuota={{ starbase_cgroups_cpuquota | default('80%') }}
-MemoryLimit={{ starbase_cgroups_memorylimit | default('4G') }}
+MemoryMax={{ starbase_cgroups_memorylimit | default('4G') }}
 {% endif %}
 
 [Install]
