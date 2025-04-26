@@ -1,4 +1,4 @@
-[![Actions Status - Master](https://github.com/juju4/ansible-starbase/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-starbase/actions?query=branch%3Amaster)
+[![Actions Status - Main](https://github.com/juju4/ansible-starbase/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-starbase/actions?query=branch%3Amain)
 [![Actions Status - Devel](https://github.com/juju4/ansible-starbase/workflows/AnsibleCI/badge.svg?branch=devel)](https://github.com/juju4/ansible-starbase/actions?query=branch%3Adevel)
 
 # starbase ansible role
@@ -6,6 +6,8 @@
 Setup JupyterOne starbase server, Graph-based security analysis for everyone.
 * https://github.com/JupiterOne/starbase
 * https://www.austinkelleher.com/starbase/
+
+Warning! project does not seem to be maintained anymore. Last release is 0.10.0 in Oct 2023.
 
 ## Requirements & Dependencies
 
