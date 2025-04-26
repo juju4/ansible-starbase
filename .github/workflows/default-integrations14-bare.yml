@@ -24,9 +24,6 @@ jobs:
           - distribution: ubuntu
             version: '22.04'
             experimental: true
-          - distribution: ubuntu
-            version: '20.04'
-            experimental: true
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: "-e starbase_no_log=false -e starbase_version=v0.7.0 -e nodejs_version=14.x"
