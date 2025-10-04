@@ -12,6 +12,7 @@
     neo4j_memory_pagecache_size: 1g
     # pragma: allowlist secret
     neo4j_password: neo4j_123456
+    neo4j_no_log: false
     nodejs_version: 18.x
     nodejs_npm_global_packages:
       - yarn
