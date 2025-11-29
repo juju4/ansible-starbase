@@ -33,7 +33,7 @@ jobs:
       NEO4J_PASSWORD_CI: neo4j_123456
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
