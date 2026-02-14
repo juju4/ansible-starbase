@@ -1,3 +1,6 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+# DEPRECATED/LOOKING FOR MAINTAINERS -> to be archived soon
+
 [![Actions Status - Main](https://github.com/juju4/ansible-starbase/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-starbase/actions?query=branch%3Amain)
 [![Actions Status - Devel](https://github.com/juju4/ansible-starbase/workflows/AnsibleCI/badge.svg?branch=devel)](https://github.com/juju4/ansible-starbase/actions?query=branch%3Adevel)
 
